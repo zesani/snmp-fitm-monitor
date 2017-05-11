@@ -175,7 +175,7 @@ export default {
     modal
   },
   computed: {
-    ...mapGetters(['info'])
+    ...mapGetters(['info', 'profile'])
   },
   methods: {
     ...mapActions(['addDevice', 'removeDevice']),
@@ -201,11 +201,18 @@ export default {
           confirmText: 'รับทราบ'
         })
       } else {
-        var params = new URLSearchParams()
-        params.append('ip', ip)
-        params.append('community', community)
-        params.append('name', name)
-        this.addDevice(params)
+        // var params = new URLSearchParams()
+        // params.append('ip', ip)
+        // params.append('community', community)
+        // params.append('name', name)
+        let temp = {
+          ip,
+          community,
+          name: name,
+          uid: this.profile.uid
+        }
+        console.log(temp)
+        this.addDevice(temp)
         this.$toast.open({
           message: 'Device Name: ' + name + '     IP: ' + ip + '     Community: ' + community,
           type: 'is-success',

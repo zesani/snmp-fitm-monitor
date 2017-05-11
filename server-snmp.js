@@ -4,11 +4,6 @@ var snmp = require('snmp-native')
 let firebase = require('firebase')
 var bodyParser = require('body-parser')
 var path = require('path')
-app.use(bodyParser.urlencoded({ extended: false }))
-app.use(bodyParser.json())
-// var moment = require('moment')
-var staticPath = path.join(__dirname, './dist')
-app.use('/', express.static(staticPath))
 var config = {
   apiKey: 'AIzaSyBe7u9FtZ5ATGU69hfd9NBbHiGCGreSWIM',
   authDomain: 'snmp-monitor-fitm.firebaseapp.com',
@@ -18,27 +13,11 @@ var config = {
   messagingSenderId: '992008104190'
 }
 firebase.initializeApp(config)
-// var devices = [{
-//   ip: '10.4.15.1',
-//   community: 'public',
-//   name: 'R415'
-// }, {
-//   ip: '10.77.5.1',
-//   community: 'public',
-//   name: 'SW4503'
-// }, {
-//   ip: '10.77.3.2',
-//   community: 'public',
-//   name: 'R330A'
-// }, {
-//   ip: '10.77.1.2',
-//   community: 'public',
-//   name: 'R124'
-// }, {
-//   ip: '10.77.7.2',
-//   community: 'public',
-//   name: 'R101C'
-// }]
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
+// var moment = require('moment')
+var staticPath = path.join(__dirname, './dist')
+app.use('/', express.static(staticPath))
 var devices = []
 var Devices = firebase.database().ref('devices')
 Devices.on('child_added', function (data) {
@@ -49,6 +28,9 @@ Devices.on('child_added', function (data) {
 })
 Devices.on('child_removed', function (data) {
   var id = data.key
+  console.log(id)
+  console.log(data.val())
+  // firebase.database().ref('/info/' + data.val().uid + '/' + data.val().name).remove()
   var index = devices.findIndex(story => story.id === id)
   devices.splice(index, 1)
   let indexInfo = Info.findIndex(item => item.name === data.val().name)
@@ -172,6 +154,7 @@ function getInfo (device) {
   var sumOutbound = 0
   deviceNetwork.getSubtree({ oid: [1, 3, 6, 1, 2, 1, 2, 2, 1, 2] }, function (err, varbinds) {
     if (err) {
+      firebase.database().ref('/devices/' + device.uid + device.name).remove()
       console.log(err)
     } else {
       if ((inbound.length !== 0) && (outbound.length !== 0) && (status.length !== 0)) {
@@ -202,7 +185,8 @@ function getInfo (device) {
         } else {
           Info.splice(indexInfo, 1, info)
         }
-        firebase.database().ref('/info/' + device.name).update(info)
+        // info.uid = device.uid
+        firebase.database().ref('/info/' + device.uid + '/' + device.name).update(info)
         // firebase.database().ref('/info/' + device.name).push(info)
         deviceNetwork.close()
       }
@@ -217,5 +201,6 @@ function bytesToSize (bytes) {
   return Math.round(bytes / Math.pow(1024, i), 2) + ' ' + sizes[i]
 }
 app.listen('3777', function () {
-  console.log('run at port')
+  console.log('https://snmp-monitor-fitm.firebaseapp.com')
+  console.log('http://localhost:3777')
 })

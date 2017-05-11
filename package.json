@@ -1,9 +1,12 @@
 {
   "name": "snmp-fitm",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A Vue.js project",
   "author": "",
-  "private": true,
+  "private": false,
+  "bin": {
+    "snmp-fitm": "server-snmp.js"
+  },
   "scripts": {
     "dev": "node build/dev-server.js",
     "start": "node build/dev-server.js",

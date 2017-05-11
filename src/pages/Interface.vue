@@ -29,7 +29,7 @@
                 </ul>
               </div>
             </div>
-            <div class="column is-8 is-offset-2 " v-if="!(info === '')">
+            <div class="column is-8 is-offset-2 is-hidden-mobile" v-if="!(info === '')">
               <table class="table is-bordered" v-if="!(show === '')">
                 <thead>
                   <tr>
@@ -46,6 +46,23 @@
                     <td v-else class="up">UP</span></td>
                     <td>{{o.inbound}}</td>
                     <td>{{o.outbound}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="column is-12 is-hidden-tablet" v-if="!(info === '')">
+              <table class="table is-bordered" v-if="!(show === '')">
+                <thead>
+                  <tr>
+                    <th>Interface</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="o in show.interface">
+                    <td>{{o.interface}}</td>
+                    <td v-if="o.status === 'Down'" class="down">DOWN</td>
+                    <td v-else class="up">UP</span></td>
                   </tr>
                 </tbody>
               </table>
